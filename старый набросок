@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>77fayyes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300&family=Manrope:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#6b6e76;--bg2:#4a4d54;--glass:rgba(18,20,26,.55);--glass-hover:rgba(18,20,26,.72);--edge:rgba(255,255,255,.16);--text:#f4f5f7;
+--slide:1.2s cubic-bezier(.65,.05,.2,1);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#5c5f66;--bg2:#3c3f45}}
+:root[data-theme="dark"]{--bg1:#5c5f66;--bg2:#3c3f45}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scrollbar-gutter:stable}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg1);color:var(--text);font-family:Manrope,system-ui,sans-serif;overflow-x:hidden}
+body.full{overflow:hidden}
+
+/* Фон. Сейчас серая заглушка, позже сюда встаёт видео (см. комментарий ниже) */
+.bg{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(60% 50% at 25% 20%,var(--bg1),transparent 70%),
+  radial-gradient(55% 55% at 80% 85%,var(--bg2),transparent 70%),var(--bg1)}
+/* <video class="bg" autoplay muted loop playsinline src="video.mp4" style="object-fit:cover"></video> */
+
+/* Части главной уезжают влево, когда открывается полный каталог */
+.home-part{transition:translate var(--slide)}
+body.full .home-part{translate:-24vw 0}
+
+.brand{position:fixed;left:0;right:0;top:0;height:100vh;height:100svh;z-index:5;display:flex;align-items:center;justify-content:center;pointer-events:none;will-change:transform}
+.name{margin:0;font-family:Unbounded,"Arial Black",sans-serif;font-weight:300;font-size:clamp(40px,10vw,120px);line-height:1;letter-spacing:-.01em;
+  animation:reveal 2.2s cubic-bezier(.2,.7,.2,1) .2s both}
+
+.nav{position:fixed;left:28px;top:32px;z-index:6;display:flex;gap:26px;font-family:Unbounded,"Arial Black",sans-serif;font-weight:300;font-size:13px;
+  opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity 1.3s ease,transform 1.3s ease,translate var(--slide)}
+.nav.on{opacity:1;transform:none;pointer-events:auto}
+.nav a{color:var(--text);text-decoration:none;opacity:.85;transition:opacity .3s}
+.nav a:hover{opacity:1}
+
+.hero{position:relative;z-index:1;height:100vh;height:100svh}
+.glass{background:var(--glass);border:1px solid var(--edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 20px 60px rgba(10,12,18,.28);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%)}
+.cta-wrap{position:absolute;left:50%;bottom:36px;transform:translateX(-50%)}
+.cta{display:inline-block;border-radius:999px;padding:14px 38px;color:var(--text);text-decoration:none;font-weight:500;font-size:16px;
+  transition:background .25s;animation:fade 1.4s ease 1.6s both}
+.cta:hover,.more:hover{background:var(--glass-hover)}
+:focus-visible{outline:2px solid #fff;outline-offset:4px}
+
+.catalog{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:120px 24px 40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.tile{aspect-ratio:3/4;border-radius:22px;transition:background .3s}
+.tile:hover{background:var(--glass-hover)}
+.more-wrap{display:flex;justify-content:center;margin-top:56px}
+.more{display:inline-flex;align-items:center;gap:14px;border-radius:999px;padding:15px 34px;color:var(--text);text-decoration:none;font-weight:500;font-size:16px;transition:background .25s}
+.more svg{width:22px;height:22px;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.more:hover svg{transform:translateX(6px)}
+
+footer{position:relative;z-index:1;padding:72px 24px calc(44px + env(safe-area-inset-bottom,0px));text-align:center;
+  font-family:Unbounded,"Arial Black",sans-serif;font-weight:300;font-size:12px;opacity:.75}
+
+/* Полный каталог: белая страница, выезжает справа */
+.full-page{position:fixed;inset:0;z-index:20;background:#fff;color:#14161c;overflow-y:auto;overscroll-behavior:contain;
+  translate:100% 0;visibility:hidden;box-shadow:-30px 0 80px rgba(10,12,18,.22);
+  transition:translate var(--slide),visibility 0s linear 1.2s}
+body.full .full-page{translate:0 0;visibility:visible;transition:translate var(--slide),visibility 0s}
+.topbar{position:sticky;top:0;height:0;z-index:3}
+.back{position:absolute;left:20px;top:calc(env(safe-area-inset-top,0px) + 22px);width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;padding:0;color:#14161c;cursor:pointer}
+.back svg{width:28px;height:28px;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.back:hover svg{transform:translateX(-5px)}
+.full-page :focus-visible{outline-color:#14161c}
+.fc{max-width:1240px;margin:0 auto;padding:110px 28px 80px;display:grid;grid-template-columns:190px 1fr;gap:48px;align-items:start}
+.filters{position:sticky;top:96px;display:flex;flex-direction:column;gap:36px}
+.filters h3{margin:0 0 14px;font-family:Unbounded,"Arial Black",sans-serif;font-weight:300;font-size:13px}
+.opts{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.opt{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:2px 0;font:500 15px Manrope,system-ui,sans-serif;color:#6a6f7b;cursor:pointer;transition:color .2s}
+.opt::before{content:"";width:10px;height:10px;border:1px solid currentColor;border-radius:50%;transition:background .2s}
+.opt:hover{color:#14161c}
+.opt[aria-pressed="true"]{color:#14161c}
+.opt[aria-pressed="true"]::before{background:#14161c}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.card{aspect-ratio:3/4;border-radius:22px;background:#eceef1;transition:background .3s}
+.card:hover{background:#e2e5e9}
+
+@keyframes reveal{from{opacity:0;filter:blur(18px);letter-spacing:.12em}to{opacity:1;filter:blur(0);letter-spacing:-.01em}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (max-width:760px){
+  .nav{top:56px;left:20px;flex-direction:column;gap:10px;font-size:11px}
+  .fc{grid-template-columns:1fr;gap:28px;padding-top:100px}
+  .filters{position:static;gap:22px}
+  .opts{flex-direction:row;flex-wrap:wrap;gap:6px 18px}
+  .fgrid{grid-template-columns:repeat(2,1fr);gap:14px}
+}
+@media (prefers-reduced-motion:reduce){.name,.cta{animation:none}.cta,.tile,.nav,.more,.more svg,.home-part,.full-page,.back svg{transition:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<div class="brand home-part" id="brand"><h1 class="name" id="name">77fayyes</h1></div>
+
+<nav class="nav home-part" id="nav">
+  <a href="#catalog" data-go="catalog">Каталог</a>
+  <a href="#footer" data-go="footer">Контакты</a>
+</nav>
+
+<section class="hero home-part" id="hero">
+  <div class="cta-wrap" id="ctaWrap"><a class="glass cta" href="#catalog" data-go="catalog">Каталог</a></div>
+</section>
+
+<section class="catalog home-part" id="catalog">
+  <div class="grid">
+    <div class="glass tile"></div><div class="glass tile"></div><div class="glass tile"></div><div class="glass tile"></div>
+    <div class="glass tile"></div><div class="glass tile"></div><div class="glass tile"></div><div class="glass tile"></div>
+  </div>
+  <div class="more-wrap">
+    <a class="glass more" id="openFull" href="#">Полный каталог
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer id="footer" class="home-part">trusted by 77fayyes</footer>
+
+<!-- Полный каталог -->
+<div class="full-page" id="fullPage" aria-hidden="true" aria-label="Полный каталог">
+  <div class="topbar">
+    <button class="back" id="back" aria-label="Назад на главную">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12H4M10 6l-6 6 6 6"/></svg>
+    </button>
+  </div>
+  <div class="fc">
+    <aside class="filters">
+      <div><h3>Категория</h3><div class="opts">
+        <button class="opt" aria-pressed="false">Худи</button><button class="opt" aria-pressed="false">Футболки</button>
+        <button class="opt" aria-pressed="false">Штаны</button><button class="opt" aria-pressed="false">Куртки</button><button class="opt" aria-pressed="false">Аксессуары</button></div></div>
+      <div><h3>Размер</h3><div class="opts">
+        <button class="opt" aria-pressed="false">XS</button><button class="opt" aria-pressed="false">S</button><button class="opt" aria-pressed="false">M</button>
+        <button class="opt" aria-pressed="false">L</button><button class="opt" aria-pressed="false">XL</button></div></div>
+      <div><h3>Цвет</h3><div class="opts">
+        <button class="opt" aria-pressed="false">Чёрный</button><button class="opt" aria-pressed="false">Белый</button>
+        <button class="opt" aria-pressed="false">Серый</button><button class="opt" aria-pressed="false">Бежевый</button></div></div>
+    </aside>
+    <div class="fgrid">
+      <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
+      <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
+      <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var brand=document.getElementById('brand'),name=document.getElementById('name'),nav=document.getElementById('nav'),catalog=document.getElementById('catalog');
+  var ctaWrap=document.getElementById('ctaWrap'),hero=document.getElementById('hero'),footer=document.getElementById('footer');
+  var panel=document.getElementById('fullPage'),openBtn=document.getElementById('openFull'),backBtn=document.getElementById('back');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cur=0,tgt=0,raf=0;
+
+  function targetP(){
+    var h=window.innerHeight,p=Math.min(1,Math.max(0,window.scrollY/h));
+    return p*p*(3-2*p);
+  }
+  function apply(p){
+    var h=window.innerHeight,fs=parseFloat(getComputedStyle(name).fontSize)||80;
+    var endScale=Math.min(1,26/fs),endY=(window.innerWidth<760?64:40)-h/2;
+    brand.style.transform='translateY('+(endY*p)+'px) scale('+(1+(endScale-1)*p)+')';
+  }
+  function loop(){
+    cur+=(tgt-cur)*0.07;
+    if(Math.abs(tgt-cur)<0.0005)cur=tgt;
+    apply(cur);
+    raf=(cur!==tgt)?requestAnimationFrame(loop):0;
+  }
+  function onScroll(){
+    if(document.body.classList.contains('full'))return;
+    tgt=targetP();
+    var top=catalog.getBoundingClientRect().top+window.scrollY;
+    nav.classList.toggle('on',window.scrollY>top-window.innerHeight*0.55);
+    /* кнопка на первом экране тает, пока не доехала до названия */
+    var o=1-Math.min(1,window.scrollY/(window.innerHeight*0.3));
+    ctaWrap.style.opacity=o;
+    ctaWrap.style.pointerEvents=o<0.2?'none':'auto';
+    if(!raf)raf=requestAnimationFrame(loop);
+  }
+
+  /* Медленный плавный переход по кнопкам */
+  var anim=0;
+  function stopAnim(){if(anim){cancelAnimationFrame(anim);anim=0;}}
+  function scrollToY(y){
+    stopAnim();
+    var max=document.documentElement.scrollHeight-window.innerHeight;
+    y=Math.max(0,Math.min(y,max));
+    var start=window.scrollY,d=y-start;
+    if(reduce||Math.abs(d)<2){window.scrollTo(0,y);return;}
+    var ms=Math.min(2800,1200+Math.abs(d)*0.9),t0=null;
+    function step(t){
+      if(t0===null)t0=t;
+      var k=Math.min(1,(t-t0)/ms);
+      var e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+      window.scrollTo(0,start+d*e);
+      anim=k<1?requestAnimationFrame(step):0;
+    }
+    anim=requestAnimationFrame(step);
+  }
+  ['wheel','touchstart','keydown'].forEach(function(ev){window.addEventListener(ev,stopAnim,{passive:true});});
+  document.querySelectorAll('[data-go]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var el=document.getElementById(a.getAttribute('data-go'));
+      scrollToY(el.getBoundingClientRect().top+window.scrollY);
+    });
+  });
+
+  /* Полный каталог: открыть / закрыть */
+  var homeParts=[nav,hero,catalog,footer];
+  function setInert(v){homeParts.forEach(function(el){if(v)el.setAttribute('inert','');else el.removeAttribute('inert');});}
+  function openFull(e){
+    e.preventDefault();stopAnim();
+    panel.scrollTop=0;
+    document.body.classList.add('full');
+    setInert(true);panel.setAttribute('aria-hidden','false');
+    setTimeout(function(){backBtn.focus({preventScroll:true});},60);
+  }
+  function closeFull(){
+    document.body.classList.remove('full');
+    setInert(false);panel.setAttribute('aria-hidden','true');
+    openBtn.focus({preventScroll:true});
+  }
+  openBtn.addEventListener('click',openFull);
+  backBtn.addEventListener('click',closeFull);
+  window.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.body.classList.contains('full'))closeFull();});
+
+  /* Фильтры (пока только визуально) */
+  document.querySelectorAll('.opt').forEach(function(b){
+    b.addEventListener('click',function(){b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')==='true'?'false':'true');});
+  });
+
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  tgt=cur=targetP();apply(cur);onScroll();
+})();
+</script>
+</body>
+</html>
